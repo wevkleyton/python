@@ -18,7 +18,9 @@ def menu_principal():
     print("# 2 - Acessar o Shell          #")
     print("# 3 - Sair                     #")
     print("################################")
-    retorno = input("prompt")
+    retorno = input("Informe a Opção : ")
+    print("Saida " + retorno)
+
 
 
 
@@ -31,6 +33,7 @@ def menu_de_sincronismo():
     print("# 4 - ver IP do JNLP         #")
     print("# 0 - Sair                   #")
     print("##############################")
+
 
 
 def sincronia():
@@ -48,5 +51,6 @@ def muda_ip_jnlp():
 def ver_ip_jnlp():
     print(IP_SERVIDOR)
 
+def switch_demo():
 
-menu_principal()
+ menu_principal()
