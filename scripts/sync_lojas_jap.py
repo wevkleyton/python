@@ -6,16 +6,21 @@
 import os
 import time
 
-from _json import make_encoder
+#from _json import make_encoder
+#Constantes
+IP_SERVIDOR="172.16.40.127"
+PATH_DIR='/home/cliente_jap'
+
 
 lista_tomcat6 = ['aba','alt','bao','bcn','bgc','bnv','cap','cdc','cao','edc','igm','itu','mar','mju','pag','pap',
                  'rbc','red','rmo','sat','sda','sdn','sfx','sll','saa','sti','tal','tcm','tub','tmc','vir','xig']
 lista_tomcat8 = ['lmc']
-IP_SERVIDOR="172.16.40.127"
 
 
 
-def menu_de_sincronismo():
+
+
+def menu_de_sincronismo_principal():
     print("\033[96m ##############################")
     print("\033[96m #      Escolha a opção       #")
     print("\033[96m # 1 - Sincronizar lojas      #")
@@ -43,12 +48,21 @@ def menu_de_sincronismo():
     else:
         print("\33[91m Opção Desconhecida")
         os.system('clear')
-        menu_de_sincronismo()
+        menu_de_sincronismo_principal()
 
 
 def sincronia():
-    for l in lista_tomcat6:
-        print("lojas : " + l)
+    for loja in lista_tomcat6:
+        resultado = os.system('ping -c5  sco'+ loja + ">/dev/null")
+        if resultado != 1:
+            print("Fazendo Sincronismo da filial de " + loja.upper())
+            os.system('rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR +'/chegando/cliente_' + loja)
+            os.system('cp -r '  + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            print('Sincronismo Finalizado ...!')
+
+
+    for t8 in lista_tomcat8:
+        print("Lojas com Tomcat8:" + t8)
 
 
 def atualiza_lojas(loja):
@@ -60,14 +74,8 @@ def muda_ip_jnlp():
 def ver_ip_jnlp():
     print(IP_SERVIDOR)
 
-"""
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m' """
+def testa_comunucacao():
+    print("teste")
 
-menu_de_sincronismo()
+
+menu_de_sincronismo_principal()
