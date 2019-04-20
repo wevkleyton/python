@@ -1,4 +1,4 @@
-#-*- coding-utf-8 -*-
+# -*- coding-utf-8 -*-
 # Autor : Wev Kleyton
 # Data : 15/04/2019
 # Script de Syncronismo de libs das filias jap
@@ -6,18 +6,16 @@
 import os
 import time
 
-#from _json import make_encoder
-#Constantes
-IP_SERVIDOR="172.16.40.127"
-PATH_DIR='/home/cliente_jap'
+# from _json import make_encoder
+# Constantes
+IP_SERVIDOR = "172.16.40.127"
+PATH_DIR = '/home/cliente_jap'
 
-
-lista_tomcat6 = ['aba','alt','bao','bcn','bgc','bnv','cap','cdc','cao','edc','igm','itu','mar','mju','pag','pap',
-                 'rbc','red','rmo','sat','sda','sdn','sfx','sll','saa','sti','tal','tcm','tub','tmc','vir','xig']
+lista_tomcat6 = ['aba', 'alt', 'bao', 'bcn', 'bgc', 'bnv', 'cap', 'cdc', 'cao', 'edc', 'igm', 'itu', 'mar', 'mju',
+                 'pag', 'pap',
+                 'rbc', 'red', 'rmo', 'sat', 'sda', 'sdn', 'sfx', 'sll', 'saa', 'sti', 'tal', 'tcm', 'tub', 'tmc',
+                 'vir', 'xig']
 lista_tomcat8 = ['lmc']
-
-
-
 
 
 def menu_de_sincronismo_principal():
@@ -41,6 +39,7 @@ def menu_de_sincronismo_principal():
         atualiza_lojas(loja)
     elif retorno == "3":
         print("\33[95m Mudando Ip de dentro do JNLP")
+        muda_ip_jnlp()
     elif retorno == "4":
         print("\33[95m Mostra Ips!")
     elif retorno == "0":
@@ -53,29 +52,56 @@ def menu_de_sincronismo_principal():
 
 def sincronia():
     for loja in lista_tomcat6:
-        resultado = os.system('ping -c5  sco'+ loja + ">/dev/null")
+        # resultado = os.system('ping -c5  sco'+ loja + ">/dev/null")
+        resultado = testa_comunucacao(loja)
         if resultado != 1:
             print("Fazendo Sincronismo da filial de " + loja.upper())
-            os.system('rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR +'/chegando/cliente_' + loja)
-            os.system('cp -r '  + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            os.system(
+                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
+            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            print('Sincronismo Finalizado ...!')
+
+    for loja in lista_tomcat8:
+        resultado = testa_comunucacao(loja)
+        if resultado != 1:
+            print("Fazendo Sincronismo da filial de " + loja.upper())
+            os.system(
+                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat8/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
+            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
             print('Sincronismo Finalizado ...!')
 
 
-    for t8 in lista_tomcat8:
-        print("Lojas com Tomcat8:" + t8)
-
-
 def atualiza_lojas(loja):
-    print(loja)
+    if loja != "lmc":
+        resultado = testa_comunucacao(loja)
+        if resultado != 1:
+            print("Fazendo Sincronismo da filial de " + loja.upper())
+            os.system(
+                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
+            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            print('Sincronismo Finalizado ...!')
+    else:
+        resultado = testa_comunucacao(loja)
+        if resultado != 1:
+            print("Fazendo Sincronismo da filial de " + loja.upper())
+            os.system(
+                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat8/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
+            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            print('Sincronismo Finalizado ...!')
+
 
 def muda_ip_jnlp():
-    print(IP_SERVIDOR)
+    lista_lojas = [lista_tomcat8, lista_tomcat6]
+    for lt in lista_lojas:
+        os.system("ip=`cat" + lt + "|grep http:// | awk -F" // " '{ print $2 }' |awk -F" / " '{print " + lt + "}'`")
+        os.system('cmd="{ s/$ip/$end/g }"')
+        os.system('sed -i "$cmd" $l')
 
-def ver_ip_jnlp():
-    print(IP_SERVIDOR)
 
-def testa_comunucacao():
-    print("teste")
+def testa_comunucacao(loja):
+    retorno = os.system('ping -c5  sco' + loja + ">/dev/null")
+    print("teste " + loja)
+    return retorno
 
 
 menu_de_sincronismo_principal()
