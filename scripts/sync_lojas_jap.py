@@ -56,38 +56,44 @@ def sincronia():
         resultado = testa_comunucacao(loja)
         if resultado != 1:
             print("Fazendo Sincronismo da filial de " + loja.upper())
-            os.system(
-                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
-            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
-            print('Sincronismo Finalizado ...!')
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat6/webapps/cliente_" + loja + "/  " + PATH_DIR + "/chegando/cliente_" + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat6/webapps/cliente_" + loja + "_ponto/" + " " + PATH_DIR + '/chegando/cliente_' + loja + "_ponto/")
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "/ " + PATH_DIR + "cliente_" + loja)
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto" + "/ " + PATH_DIR + "cliente_" + loja + "ponto/")
+            print("Sincronismo Finalizado ...!")
 
     for loja in lista_tomcat8:
         resultado = testa_comunucacao(loja)
         if resultado != 1:
             print("Fazendo Sincronismo da filial de " + loja.upper())
-            os.system(
-                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat8/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
-            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat8/webapps/cliente_" + loja + "/ " + PATH_DIR + "/chegando/cliente_" + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat8/webapps/cliente_" + loja + "_ponto/" + " " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto/")
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "/  " + PATH_DIR + "cliente_" + loja)
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto/" + " " + PATH_DIR + "cliente_" + loja + "_ponto/")
             print('Sincronismo Finalizado ...!')
 
 
 def atualiza_lojas(loja):
-    if loja != "lmc":
-        resultado = testa_comunucacao(loja)
-        if resultado != 1:
+    resultado = testa_comunucacao(loja)
+    if resultado == 0:
+        if loja == "lmc":
             print("Fazendo Sincronismo da filial de " + loja.upper())
-            os.system(
-                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
-            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat8/webapps/cliente_" + loja + "/ " + PATH_DIR + "/chegando/cliente_" + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat8/webapps/cliente_" + loja + "_ponto/" + " " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto/")
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "/  " + PATH_DIR + "cliente_" + loja)
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto/" + " " + PATH_DIR + "cliente_" + loja + "_ponto/")
             print('Sincronismo Finalizado ...!')
+        else:
+            print("Fazendo Sincronismo da filial de " + loja.upper())
+            os.system("rsync -Cravzp socic@sco" + loja + ":/var/lib/tomcat6/webapps/cliente_" + loja + "/  " +PATH_DIR + "/chegando/cliente_" + loja)
+            os.system("rsync -Cravzp socic@sco" + loja + ':/var/lib/tomcat6/webapps/cliente_' + loja + "_ponto/" + " " + PATH_DIR + '/chegando/cliente_' + loja + "_ponto/")
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "/  " + PATH_DIR + "cliente_" + loja)
+            os.system("cp -r " + PATH_DIR + "/chegando/cliente_" + loja + "_ponto/" + " " + PATH_DIR + "cliente_" + loja + "ponto/")
+            print("Sincronismo Finalizado ...!")
+
     else:
-        resultado = testa_comunucacao(loja)
-        if resultado != 1:
-            print("Fazendo Sincronismo da filial de " + loja.upper())
-            os.system(
-                'rsync -Cravzp socic@sco' + loja + ':/var/lib/tomcat8/webapps/cliente_' + loja + PATH_DIR + '/chegando/cliente_' + loja)
-            os.system('cp -r ' + PATH_DIR + '/chegando/cliente_' + loja + ' ' + PATH_DIR + 'cliente_' + loja)
-            print('Sincronismo Finalizado ...!')
+        print("Loja: " + loja + " Está Sem Comunicação!")
+
 
 
 def muda_ip_jnlp():
@@ -100,7 +106,6 @@ def muda_ip_jnlp():
 
 def testa_comunucacao(loja):
     retorno = os.system('ping -c5  sco' + loja + ">/dev/null")
-    print("teste " + loja)
     return retorno
 
 
